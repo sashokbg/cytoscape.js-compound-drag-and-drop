@@ -159,6 +159,7 @@ module.exports = {
     return {};
   }, // specifies element json for parent nodes added by dropping an orphan node on another orphan (a drop sibling)
   allowOrphanedParents: false, // keep parent nodes when last child is removed. Useful in combination with newParentNode callback
+  includeLabels: true, // consider labels when detecting if one node is over another. See cytoscape eles.boundingBox()
   overThreshold: 10, // make dragging over a drop target easier by expanding the hit area by this amount on all sides
   outThreshold: 10 // make dragging out of a drop target a bit harder by expanding the hit area by this amount on all sides
 };
@@ -218,7 +219,9 @@ var addListeners = function addListeners() {
     return (canBeDropTarget(n) || canBeDropSibling(n)) && !n.same(_this.dropTarget);
   };
   var updateBoundsTuples = function updateBoundsTuples() {
-    return _this.boundsTuples = cy.nodes(canBeInBoundsTuple).map(getBoundsTuple);
+    return _this.boundsTuples = cy.nodes(canBeInBoundsTuple).map(function (n) {
+      return getBoundsTuple(n, options.includeLabels);
+    });
   };
 
   var reset = function reset() {
@@ -248,7 +251,7 @@ var addListeners = function addListeners() {
 
     if (canPullFromParent(node)) {
       _this.dropTarget = node.parent();
-      _this.dropTargetBounds = getBoundsCopy(_this.dropTarget);
+      _this.dropTargetBounds = getBoundsCopy(_this.dropTarget, options.includeLabels);
     }
 
     updateBoundsTuples();
@@ -267,7 +270,7 @@ var addListeners = function addListeners() {
     var newNode = e.target;
 
     if (canBeInBoundsTuple(newNode)) {
-      _this.boundsTuples.push(getBoundsTuple(newNode));
+      _this.boundsTuples.push(getBoundsTuple(newNode, options.includeLabels));
     }
   });
 
@@ -301,7 +304,7 @@ var addListeners = function addListeners() {
 
     if (_this.dropTarget.nonempty()) {
       // already in a parent
-      var bb = expandBounds(getBounds(_this.grabbedNode), options.outThreshold);
+      var bb = expandBounds(getBounds(_this.grabbedNode, options.includeLabels), options.outThreshold);
       var parent = _this.dropTarget;
       var sibling = _this.dropSibling;
       var rmFromParent = !boundsOverlap(_this.dropTargetBounds, bb);
@@ -332,7 +335,7 @@ var addListeners = function addListeners() {
       }
     } else {
       // not in a parent
-      var _bb = expandBounds(getBounds(_this.grabbedNode), options.overThreshold);
+      var _bb = expandBounds(getBounds(_this.grabbedNode, options.includeLabels), options.overThreshold);
       var tupleOverlaps = function tupleOverlaps(t) {
         return !t.node.removed() && boundsOverlap(_bb, t.bb);
       };
@@ -359,7 +362,7 @@ var addListeners = function addListeners() {
 
         setParent(_sibling, _parent);
 
-        _this.dropTargetBounds = getBoundsCopy(_parent);
+        _this.dropTargetBounds = getBoundsCopy(_parent, options.includeLabels);
 
         setParent(_this.grabbedNode, _parent);
 
@@ -443,17 +446,17 @@ var isOnlyChild = function isOnlyChild(n) {
   return isChild(n) && n.parent().children().length === 1;
 };
 
-var getBounds = function getBounds(n) {
-  return n.boundingBox({ includeOverlays: false });
+var getBounds = function getBounds(n, includeLabels) {
+  return n.boundingBox({ includeOverlays: false, includeLabels: includeLabels });
 };
-var getBoundsTuple = function getBoundsTuple(n) {
-  return { node: n, bb: copyBounds(getBounds(n)) };
+var getBoundsTuple = function getBoundsTuple(n, includeLabels) {
+  return { node: n, bb: copyBounds(getBounds(n, includeLabels)) };
 };
 var copyBounds = function copyBounds(bb) {
   return { x1: bb.x1, x2: bb.x2, y1: bb.y1, y2: bb.y2, w: bb.w, h: bb.h };
 };
-var getBoundsCopy = function getBoundsCopy(n) {
-  return copyBounds(getBounds(n));
+var getBoundsCopy = function getBoundsCopy(n, includeLabels) {
+  return copyBounds(getBounds(n, includeLabels));
 };
 
 var removeParent = function removeParent(n) {
