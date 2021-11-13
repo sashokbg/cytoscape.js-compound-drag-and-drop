@@ -11,7 +11,7 @@
 return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 658:
+/***/ 142:
 /***/ ((module) => {
 
 // Simple, internal Object.assign() polyfill for options objects etc.
@@ -32,7 +32,7 @@ module.exports = Object.assign != null ? Object.assign.bind(Object) : function (
 
 /***/ }),
 
-/***/ 738:
+/***/ 271:
 /***/ ((module) => {
 
 /* eslint-disable no-unused-vars */
@@ -61,16 +61,16 @@ module.exports = {
 
 /***/ }),
 
-/***/ 904:
+/***/ 422:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var assign = __webpack_require__(658);
+var assign = __webpack_require__(142);
 
-var defaults = __webpack_require__(738);
+var defaults = __webpack_require__(271);
 
-var toggle = __webpack_require__(43);
+var toggle = __webpack_require__(282);
 
-var listeners = __webpack_require__(444);
+var listeners = __webpack_require__(983);
 
 var DragAndDrop = function DragAndDrop(cy, options) {
   this.cy = cy;
@@ -97,10 +97,10 @@ module.exports = function (options) {
 
 /***/ }),
 
-/***/ 444:
+/***/ 983:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var _require = __webpack_require__(235),
+var _require = __webpack_require__(436),
     isParent = _require.isParent,
     isChild = _require.isChild,
     isOnlyChild = _require.isOnlyChild,
@@ -343,7 +343,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 43:
+/***/ 282:
 /***/ ((module) => {
 
 function enable() {
@@ -361,7 +361,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 235:
+/***/ 436:
 /***/ ((module) => {
 
 var isParent = function isParent(n) {
@@ -484,10 +484,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ 579:
+/***/ 175:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var impl = __webpack_require__(904); // registers the extension on a cytoscape lib ref
+var impl = __webpack_require__(422); // registers the extension on a cytoscape lib ref
 
 
 var register = function register(cytoscape) {
@@ -539,7 +539,7 @@ module.exports = register;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(579);
+/******/ 	var __webpack_exports__ = __webpack_require__(175);
 /******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()
